@@ -5,18 +5,18 @@ class Items {
     this.id = items.id;
     this.product_id = items.product_id;
     this.promotion_id = items.promotion_id;
-    this.item_image = items.item_image; // New column
+    
   }
 
   static create(newItem) {
     return new Promise((resolve, reject) => {
       dbConn.query(
-        'INSERT INTO item (id, product_id, promotion_id, item_image) VALUES (?, ?, ?, ?)', 
+        'INSERT INTO item (id, product_id, promotion_id) VALUES (?, ?, ?)', 
         [
           newItem.id,
           newItem.product_id,
           newItem.promotion_id,
-          newItem.item_image // New column
+         
         ], 
         (err, result) => {
           if (err) {

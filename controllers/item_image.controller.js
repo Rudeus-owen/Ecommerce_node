@@ -75,7 +75,6 @@ exports.deleteItemImage = async (req, res) => {
     const { id } = req.params; // Assumes id is passed as a URL parameter
 
     try {
-        // Retrieve the image record to get the file path
         const itemImage = await ItemImage.findById(id);
         if (!itemImage) {
             return res.status(404).json({
@@ -110,7 +109,6 @@ exports.deleteItemImage = async (req, res) => {
 // Controller to delete all item images
 exports.deleteAllItemImages = async (req, res) => {
     try {
-        // Retrieve all image records to get file paths
         const itemImages = await ItemImage.findAll();
 
         if (itemImages.length === 0) {
@@ -119,15 +117,15 @@ exports.deleteAllItemImages = async (req, res) => {
             });
         }
 
-        // Delete the files from Firebase Storage
         const deletePromises = itemImages.map(async (itemImage) => {
-            const fileRef = ref(storage, itemImage.image);
-            await deleteObject(fileRef);
+            if (typeof itemImage.image === 'string') {
+                const fileRef = ref(storage, itemImage.image);
+                await deleteObject(fileRef);
+            }
         });
 
         await Promise.all(deletePromises);
 
-        // Delete all records from the database
         const result = await ItemImage.deleteAll();
 
         res.status(200).json({
@@ -135,7 +133,7 @@ exports.deleteAllItemImages = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({
+        res.status500.json({
             message: 'Error deleting all item images',
             error: err.message
         });

@@ -109,14 +109,24 @@ exports.deleteProductImage = async (req, res) => {
 exports.deleteAllProductImages = async (req, res) => {
     try {
         const productImages = await ProductImage.findAll();
+
+        if (productImages.length === 0) {
+            return res.status(404).json({
+                message: 'No product images found'
+            });
+        }
+
         const deletePromises = productImages.map(async (productImage) => {
-            const fileRef = ref(storage, productImage.product_img);
-            await deleteObject(fileRef);
+            if (typeof productImage.product_img === 'string') {
+                const fileRef = ref(storage, productImage.product_img);
+                await deleteObject(fileRef);
+            }
         });
 
         await Promise.all(deletePromises);
 
         const result = await ProductImage.deleteAll();
+
         res.status(200).json({
             message: 'All product images deleted successfully'
         });

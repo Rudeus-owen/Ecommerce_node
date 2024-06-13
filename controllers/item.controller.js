@@ -7,7 +7,6 @@ exports.create = async (req, res) => {
       id: req.body.id, // Ensure the id is passed in the request body
       product_id: req.body.product_id,
       promotion_id: req.body.promotion_id,
-      item_image: req.body.item_image // New column
     });
 
     const createdItem = await Items.create(newItem);
@@ -47,7 +46,6 @@ exports.update = async (req, res) => {
       id: req.params.id, // Ensure the id is passed in the request params
       product_id: req.body.product_id,
       promotion_id: req.body.promotion_id,
-      item_image: req.body.item_image // New column
     });
 
     const result = await Items.updateById(req.params.id, updatedItem);
